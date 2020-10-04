@@ -16,18 +16,30 @@ namespace vtbulk
             return File.ReadAllLines(fileName);
         }
 
-        private const string VTKey = "";
-
-        static void Main(string[] args)
+        private static (string HashFile, string VTKey, string OutputPath) ParseArguments(string[] args)
         {
             if (args.Length < 2)
             {
                 Console.WriteLine("Not enough arguments: <path to hashes> <virus total key>");
 
-                return;
+                throw new ArgumentOutOfRangeException(nameof(args));
             }
 
-            var hashes = GetHashes(args[0]);
+            switch (args.Length)
+            {
+                case 3:
+                    return (args[0], args[1], args[2]);
+                default:
+                    break;
+            }
+
+            return (args[0], args[1], AppContext.BaseDirectory);
+        }
+        static void Main(string[] args)
+        {
+            var arguments = ParseArguments(args);
+
+            var hashes = GetHashes(arguments.HashFile);
 
             var handler = new VTHTTPHandler();
 
@@ -38,11 +50,11 @@ namespace vtbulk
                     return;
                 }
 
-                var response = VTHTTPHandler.DownloadAsync(args[1], hash).Result;
+                var response = VTHTTPHandler.DownloadAsync(arguments.VTKey, hash).Result;
 
                 if (response.Status == Enums.DownloadResponseStatus.SUCCESS)
                 {
-                    File.WriteAllBytes(hash, response.Data);
+                    File.WriteAllBytes(Path.Combine(arguments.OutputPath, hash), response.Data);
                 }
             });
         }

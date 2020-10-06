@@ -6,8 +6,15 @@ namespace vtbulk.Helpers
 {
     public class CommandLineParserHelper
     {
+        /// <exception cref="System.ArgumentNullException">Null arguments</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Invalid number of options</exception>
         public static CommandLineArgumentsItem Parse(string[] args)
         {
+            if (args == null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
             if (args.Length < 4)
             {
                 Console.WriteLine("Not enough arguments: -path <path to hashes> -vtkey <virus total key>");

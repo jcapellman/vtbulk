@@ -1,4 +1,6 @@
-﻿namespace vtbulk.Objects
+﻿using System;
+
+namespace vtbulk.Objects
 {
     public class CommandLineArgumentsItem
     {
@@ -7,5 +9,10 @@
         public string InputHashFile { get; set; }
     
         public string VTKey { get; set; }
+
+        public CommandLineArgumentsItem()
+        {
+            OutputFilePath = AppContext.BaseDirectory;
+        }
     }
 }

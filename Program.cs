@@ -26,7 +26,9 @@ namespace vtbulk
 
             Parallel.ForEach(hashes, async (hash, state) =>
             {
-                if (File.Exists(hash))
+                var fullPath = Path.Combine(arguments.OutputFilePath, hash);
+
+                if (File.Exists(fullPath))
                 {
                     return;
                 }
@@ -44,7 +46,6 @@ namespace vtbulk
                         state.Break();
                         return;
                     case Enums.DownloadResponseStatus.SUCCESS:
-                        var fullPath = Path.Combine(arguments.OutputFilePath, hash);
                         File.WriteAllBytes(fullPath, response.Data);
 
                         Console.WriteLine($"{hash} was downloaded to {fullPath}");

@@ -46,6 +46,9 @@ namespace vtbulk.Helpers
                     case "outputpath":
                         item.OutputFilePath = args[x + 1];
                         break;
+                    case "verbose":
+                        item.VerboseOutput = args[x + 1];
+                        break;
                     default:
                         Console.WriteLine($"Invalid option ({option})");
                             break;

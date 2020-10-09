@@ -10,6 +10,8 @@ namespace vtbulk.Objects
     
         public string VTKey { get; set; }
 
+        public bool VerboseOutput { get; set; }
+
         public CommandLineArgumentsItem()
         {
             OutputFilePath = AppContext.BaseDirectory;

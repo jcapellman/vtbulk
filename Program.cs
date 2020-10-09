@@ -18,6 +18,14 @@ namespace vtbulk
             return File.ReadAllLines(fileName);
         }
 
+        private static void WriteLine(string line, bool verbose = true)
+        {
+            if (verbose)
+            {
+                Console.WriteLine($"{DateTime.Now} - {line}");
+            }
+        }
+
         static void Main(string[] args)
         {
             var arguments = CommandLineParserHelper.Parse(args);
@@ -30,6 +38,7 @@ namespace vtbulk
 
                 if (File.Exists(fullPath))
                 {
+                    WriteLine($"{fullPath} already exists - ignoring", arguments.VerboseOutput);
                     return;
                 }
 
@@ -38,17 +47,17 @@ namespace vtbulk
                 switch (response.Status)
                 {
                     case Enums.DownloadResponseStatus.SAMPLE_NOT_FOUND:
-                        Console.WriteLine($"{hash} was not found in VirusTotal");
+                        WriteLine($"{hash} was not found in VirusTotal");
                         break;
                     case Enums.DownloadResponseStatus.INVALID_VT_KEY:
-                        Console.WriteLine("Invalid Virus Total Key - aborting operation");
+                        WriteLine("Invalid Virus Total Key - aborting operation");
 
                         state.Break();
                         return;
                     case Enums.DownloadResponseStatus.SUCCESS:
                         File.WriteAllBytes(fullPath, response.Data);
 
-                        Console.WriteLine($"{hash} was downloaded to {fullPath}");
+                        WriteLine($"{hash} was downloaded to {fullPath}");
                         break;
                 }
             });

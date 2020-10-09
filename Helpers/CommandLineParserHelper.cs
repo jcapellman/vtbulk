@@ -35,23 +35,32 @@ namespace vtbulk.Helpers
             {
                 var option = args[x].ToLower();
 
+                var optionValue = args[x + 1];
+
                 switch (option)
                 {
                     case "vtkey":
-                        item.VTKey = args[x + 1];
+                        item.VTKey = optionValue;
                         break;
                     case "inputfile":
-                        item.InputHashFile = args[x + 1];
+                        item.InputHashFile = optionValue;
                         break;
                     case "outputpath":
-                        item.OutputFilePath = args[x + 1];
+                        item.OutputFilePath = optionValue;
                         break;
                     case "verbose":
-                        item.VerboseOutput = args[x + 1];
+                        try
+                        {
+                            item.VerboseOutput = Convert.ToBoolean(optionValue);
+                        } catch (FormatException)
+                        {
+                            Console.WriteLine($"Invalid value for verbose flag ({optionValue})");
+                        }
+
                         break;
                     default:
                         Console.WriteLine($"Invalid option ({option})");
-                            break;
+                        break;
                 }
             }
 

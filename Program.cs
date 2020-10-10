@@ -46,6 +46,9 @@ namespace vtbulk
 
                 switch (response.Status)
                 {
+                    case Enums.DownloadResponseStatus.UNEXPECTED_HTTP_ERROR:
+                        WriteLine($"{hash} could not be downloaded due to an unexpected error: {response.DownloadException}");
+                        break;
                     case Enums.DownloadResponseStatus.SAMPLE_NOT_FOUND:
                         WriteLine($"{hash} was not found in VirusTotal");
                         break;

@@ -58,9 +58,14 @@ namespace vtbulk
                         state.Break();
                         return;
                     case Enums.DownloadResponseStatus.SUCCESS:
-                        File.WriteAllBytes(fullPath, response.Data);
+                        try {
+                            File.WriteAllBytes(fullPath, response.Data);
 
-                        WriteLine($"{hash} was downloaded to {fullPath}");
+                            WriteLine($"{hash} was downloaded to {fullPath}");
+                        } catch (Exception ex)
+                        {
+                            WriteLine($"{hash} failed to write to disk properly due to: {ex}");
+                        }
                         break;
                 }
             });

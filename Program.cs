@@ -18,12 +18,16 @@ namespace vtbulk
             return File.ReadAllLines(fileName);
         }
 
-        private static void WriteLine(string line, bool verbose = true)
+        private static void WriteLine(string line, Exception exception = null, bool verbose = true)
         {
-            if (verbose)
+            line = $"{DateTime.Now} - {line}";
+
+            if (verbose && exception != null)
             {
-                Console.WriteLine($"{DateTime.Now} - {line}");
+                line = $"{line} (Exception: {exception})";
             }
+
+            Console.WriteLine(line);
         }
 
         static void Main(string[] args)
@@ -38,7 +42,7 @@ namespace vtbulk
 
                 if (File.Exists(fullPath))
                 {
-                    WriteLine($"{fullPath} already exists - ignoring", arguments.VerboseOutput);
+                    WriteLine($"{fullPath} already exists - ignoring", null, arguments.VerboseOutput);
                     return;
                 }
 
@@ -47,7 +51,7 @@ namespace vtbulk
                 switch (response.Status)
                 {
                     case Enums.DownloadResponseStatus.UNEXPECTED_HTTP_ERROR:
-                        WriteLine($"{hash} could not be downloaded due to an unexpected error: {response.DownloadException}");
+                        WriteLine($"{hash} could not be downloaded due to an unexpected error", response.DownloadException);
                         break;
                     case Enums.DownloadResponseStatus.SAMPLE_NOT_FOUND:
                         WriteLine($"{hash} was not found in VirusTotal");
@@ -58,14 +62,20 @@ namespace vtbulk
                         state.Break();
                         return;
                     case Enums.DownloadResponseStatus.SUCCESS:
-                        try {
+                        try
+                        {
                             File.WriteAllBytes(fullPath, response.Data);
 
                             WriteLine($"{hash} was downloaded to {fullPath}");
-                        } catch (Exception ex)
-                        {
-                            WriteLine($"{hash} failed to write to disk properly due to: {ex}");
                         }
+                        catch (Exception ex)
+                        {
+                            WriteLine($"{hash} failed to write to disk properly", ex);
+                        }
+                        break;
+                    case Enums.DownloadResponseStatus.CANNOT_WRITE_FILE:
+                        break;
+                    case Enums.DownloadResponseStatus.CANNOT_CONNECT_TO_VT:
                         break;
                 }
             });

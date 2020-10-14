@@ -76,6 +76,9 @@ namespace vtbulk
                     case Enums.DownloadResponseStatus.CANNOT_WRITE_FILE:
                         break;
                     case Enums.DownloadResponseStatus.CANNOT_CONNECT_TO_VT:
+                        WriteLine("Could not connect to VirusTotal - aborting");
+
+                        state.Break();
                         break;
                 }
             });

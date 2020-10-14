@@ -12,6 +12,8 @@ namespace vtbulk.Objects
 
         public bool VerboseOutput { get; set; }
 
+        public bool EnableMultithreading { get; set; }
+
         public CommandLineArgumentsItem()
         {
             OutputFilePath = AppContext.BaseDirectory;

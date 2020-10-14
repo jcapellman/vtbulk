@@ -58,6 +58,16 @@ namespace vtbulk.Helpers
                         }
 
                         break;
+                    case "EnableMultithreading":
+                        try
+                        {
+                            item.EnableMultithreading = Convert.ToBoolean(optionValue);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine($"Invalid value for enablemultithreading flag ({optionValue})");
+                        }
+                        break;
                     default:
                         Console.WriteLine($"Invalid option ({option})");
                         break;

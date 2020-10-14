@@ -36,7 +36,12 @@ namespace vtbulk
 
             var hashes = GetHashes(arguments.InputHashFile);
 
-            Parallel.ForEach(hashes, async (hash, state) =>
+            var parallelOptions = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = (arguments.EnableMultithreading ? Environment.ProcessorCount : 1)
+            };
+
+            Parallel.ForEach(hashes, parallelOptions, async (hash, state) =>
             {
                 var fullPath = Path.Combine(arguments.OutputFilePath, hash);
 

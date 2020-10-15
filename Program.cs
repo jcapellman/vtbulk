@@ -41,6 +41,14 @@ namespace vtbulk
                 MaxDegreeOfParallelism = (arguments.EnableMultithreading ? Environment.ProcessorCount : 1)
             };
 
+            if (arguments.EnableMultithreading)
+            {
+                WriteLine($"Multi-Threading Enabled - {Environment.ProcessorCount} Threads will be used", verbose: arguments.VerboseOutput);
+            } else
+            {
+                WriteLine("Multi-Threading Disabled - Single Threaded Mode will be used", verbose: arguments.VerboseOutput);
+            }
+
             Parallel.ForEach(hashes, parallelOptions, async (hash, state) =>
             {
                 var fullPath = Path.Combine(arguments.OutputFilePath, hash);

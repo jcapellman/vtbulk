@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Linq;
+using System.Reflection;
+using vtbulk.Interfaces;
 using vtbulk.Objects;
 
 namespace vtbulk.Helpers
@@ -29,6 +31,10 @@ namespace vtbulk.Helpers
                 throw new ArgumentOutOfRangeException("Invalid number of options");
             }
 
+            var hashSources = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(a => a.BaseType == typeof(IHashList) && !a.IsInterface)
+                .Select(b => (IHashList) Activator.CreateInstance(b)).ToList();
+
             var item = new CommandLineArgumentsItem();
 
             for (var x = 0; x < args.Length; x+=2)
@@ -42,8 +48,17 @@ namespace vtbulk.Helpers
                     case "vtkey":
                         item.VTKey = optionValue;
                         break;
-                    case "inputfile":
-                        item.InputHashFile = optionValue;
+                    case "inputsource":
+                        item.HashSource = hashSources.FirstOrDefault(a => string.Equals(a.Name, optionValue, StringComparison.CurrentCultureIgnoreCase));
+
+                        if (item.HashSource == null)
+                        {
+                            Console.WriteLine($"{optionValue} is an invalid inputsource option. Supported options are: {string.Join(',', hashSources.Select(a => a.Name))}");
+                        }
+
+                        break;
+                    case "inputsourceargument":
+                        item.HashListSourceArgument = optionValue;
                         break;
                     case "outputpath":
                         item.OutputFilePath = optionValue;
@@ -74,10 +89,17 @@ namespace vtbulk.Helpers
                 }
             }
 
-            if (item.VTKey is null || item.InputHashFile is null) {
-                Console.WriteLine("inputfile and vtkey are required");
+            if (item.VTKey is null || item.HashSource == null) {
+                Console.WriteLine("inputsource and vtkey are required");
 
-                throw new ArgumentOutOfRangeException("inputfile and vtkey are required");
+                throw new ArgumentOutOfRangeException("inputsource and vtkey are required");
+            }
+
+            if (item.HashSource.ArgumentRequired && string.IsNullOrEmpty(item.HashListSourceArgument))
+            {
+                Console.WriteLine($"Input Source of type ({item.HashSource.Name}) requires an argument");
+
+                throw new ArgumentOutOfRangeException("inputsourceargument is required for the selected input source");
             }
 
             return item;

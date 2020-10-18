@@ -8,9 +8,7 @@ namespace vtbulk
         {
             var arguments = CommandLineParserHelper.Parse(args);
 
-            var hashes = HashLoader.GetHashes(arguments.InputHashFile);
-
-            new Downloader(arguments).Download(hashes);
+            new Downloader(arguments).Download();
         }
     }
 }

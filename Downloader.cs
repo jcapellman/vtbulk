@@ -31,8 +31,10 @@ namespace vtbulk
             }
         }
 
-        public void Download(string[] hashes)
+        public void Download()
         {
+            var hashes = Arguments.HashSource.GetHashes(Arguments.HashListSourceArgument);
+
             if (!hashes.Any())
             {
                 Console.WriteLine("No hashes to download from the selected source");
@@ -45,14 +47,10 @@ namespace vtbulk
                 MaxDegreeOfParallelism = (Arguments.EnableMultithreading ? Environment.ProcessorCount : 1)
             };
 
-            if (Arguments.EnableMultithreading)
-            {
-                WriteLine($"Multi-Threading Enabled - {Environment.ProcessorCount} Threads will be used", verbose: arguments.VerboseOutput);
-            }
-            else
-            {
-                WriteLine("Multi-Threading Disabled - Single Threaded Mode will be used", verbose: arguments.VerboseOutput);
-            }
+            WriteLine(
+                Arguments.EnableMultithreading
+                    ? $"Multi-Threading Enabled - {Environment.ProcessorCount} Threads will be used"
+                    : "Multi-Threading Disabled - Single Threaded Mode will be used", verbose: Arguments.VerboseOutput);
 
             Parallel.ForEach(hashes, parallelOptions, async (hash, state) =>
             {
@@ -82,7 +80,7 @@ namespace vtbulk
                     case Enums.DownloadResponseStatus.SUCCESS:
                         try
                         {
-                            File.WriteAllBytes(fullPath, response.Data);
+                            await File.WriteAllBytesAsync(fullPath, response.Data);
 
                             WriteLine($"{hash} was downloaded to {fullPath}");
                         }

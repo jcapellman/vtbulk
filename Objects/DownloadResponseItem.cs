@@ -6,11 +6,11 @@ namespace vtbulk.Objects
 {
     public class DownloadResponseItem
     {
-        public DownloadResponseStatus Status { get; set; }
+        public DownloadResponseStatus Status { get; }
 
-        public Exception DownloadException { get; set; }
+        public Exception DownloadException { get; }
 
-        public byte[] Data { get; set; }
+        public byte[] Data { get; }
 
         public DownloadResponseItem(byte[] data)
         {

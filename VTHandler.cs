@@ -17,11 +17,6 @@ namespace vtbulk
                 var file = await httpClient.GetByteArrayAsync(
                     $"https://www.virustotal.com/vtapi/v2/file/download?apikey={vtKey}&hash={hash}");
 
-                if (file == null)
-                {
-                    return new DownloadResponseItem(DownloadResponseStatus.CANNOT_CONNECT_TO_VT);
-                }
-
                 return new DownloadResponseItem(file);
             }
             catch (HttpRequestException requestException)

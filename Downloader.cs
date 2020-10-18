@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using vtbulk.Objects;
@@ -32,6 +33,13 @@ namespace vtbulk
 
         public void Download(string[] hashes)
         {
+            if (!hashes.Any())
+            {
+                Console.WriteLine("No hashes to download from the selected source");
+
+                return;
+            }
+
             var parallelOptions = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = (Arguments.EnableMultithreading ? Environment.ProcessorCount : 1)

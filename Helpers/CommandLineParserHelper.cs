@@ -99,7 +99,7 @@ namespace vtbulk.Helpers
             {
                 Console.WriteLine($"Input Source of type ({item.HashSource.Name}) requires an argument");
 
-                throw new ArgumentOutOfRangeException("inputsourceargument is required for the selected input source");
+                throw new System.ArgumentOutOfRangeException(nameof(args), "inputsourceargument is required for the selected input source");
             }
 
             return item;

@@ -19,25 +19,25 @@ namespace vtbulk.Helpers
 
             if (args.Length < 4)
             {
-                Console.WriteLine("Not enough arguments: -path <path to hashes> -vtkey <virus total key>");
+                Console.WriteLine("Not enough arguments: -inputsource <source of hashes> -vtkey <virus total key>");
 
                 throw new ArgumentOutOfRangeException(nameof(args));
             }
 
             if (args.Length % 2 != 0)
             {
-                Console.WriteLine("Invalid number of options");
+                Console.WriteLine("Invalid number of options (even number options are required)");
 
                 throw new ArgumentOutOfRangeException("Invalid number of options");
             }
 
             var hashSources = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(a => a.BaseType == typeof(IHashList) && !a.IsInterface)
-                .Select(b => (IHashList) Activator.CreateInstance(b)).ToList();
+                .Select(b => (IHashList)Activator.CreateInstance(b)).ToList();
 
             var item = new CommandLineArgumentsItem();
 
-            for (var x = 0; x < args.Length; x+=2)
+            for (var x = 0; x < args.Length; x += 2)
             {
                 var option = args[x].ToLower();
 
@@ -67,7 +67,8 @@ namespace vtbulk.Helpers
                         try
                         {
                             item.VerboseOutput = Convert.ToBoolean(optionValue);
-                        } catch (FormatException)
+                        }
+                        catch (FormatException)
                         {
                             Console.WriteLine($"Invalid value for verbose flag ({optionValue})");
                         }
@@ -89,7 +90,8 @@ namespace vtbulk.Helpers
                 }
             }
 
-            if (item.VTKey is null || item.HashSource == null) {
+            if (item.VTKey is null || item.HashSource == null)
+            {
                 Console.WriteLine("inputsource and vtkey are required");
 
                 throw new ArgumentOutOfRangeException("inputsource and vtkey are required");

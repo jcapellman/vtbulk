@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+
 using vtbulk.Interfaces;
 using vtbulk.Objects;
 
@@ -31,15 +32,15 @@ namespace vtbulk.Helpers
                 throw new ArgumentOutOfRangeException("Invalid number of options");
             }
 
-            var hashSources = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(a => a.BaseType == typeof(IHashList) && !a.IsInterface)
+            var hashSources = typeof(CommandLineParserHelper).Assembly.GetTypes()
+                .Where(a => !a.IsInterface && typeof(IHashList).IsAssignableFrom(a))
                 .Select(b => (IHashList)Activator.CreateInstance(b)).ToList();
 
             var item = new CommandLineArgumentsItem();
 
             for (var x = 0; x < args.Length; x += 2)
             {
-                var option = args[x].ToLower();
+                var option = args[x].ToLower()[1..];
 
                 var optionValue = args[x + 1];
 

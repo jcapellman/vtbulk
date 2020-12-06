@@ -1,4 +1,5 @@
-﻿using vtbulk.Helpers;
+﻿using System;
+using vtbulk.Helpers;
 
 namespace vtbulk
 {
@@ -6,9 +7,14 @@ namespace vtbulk
     {
         static void Main(string[] args)
         {
-            var arguments = CommandLineParserHelper.Parse(args);
+            try
+            {
+                var arguments = CommandLineParserHelper.Parse(args);
 
-            new Downloader(arguments).Download();
+                new Downloader(arguments).Download();
+            } 
+            catch (ArgumentOutOfRangeException) { }
+            catch (ArgumentNullException) { }
         }
     }
 }
